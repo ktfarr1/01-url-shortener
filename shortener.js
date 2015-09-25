@@ -34,8 +34,7 @@ function shortener(alphabet, protocol, ids) {
    * @returns {number}
    */
   function nextid() {
-    // TODO
-    return 0;
+    return ids++;
   }
 
   /**
@@ -48,8 +47,8 @@ function shortener(alphabet, protocol, ids) {
    * @returns {string}
    */
   function getPath(url) {
-    // TODO
-    return 'wrong';
+    var splitUrl = url.split('/');
+    return splitUrl[3];
   }
 
   /**
@@ -72,8 +71,15 @@ function shortener(alphabet, protocol, ids) {
    * @returns {Array.<number>}
    */
   function toDigits(id) {
-    // TODO
-    return [1, 0, 3];
+    var alphabetLength = alphabet.length;
+    var idArray = [];
+    do {
+      var remainder = id % alphabetLength;
+      idArray.push(remainder);
+      id = Math.floor(id/alphabetLength);
+    } while(id > 0);
+
+    return idArray.reverse();
   }
 
   /**
@@ -93,8 +99,16 @@ function shortener(alphabet, protocol, ids) {
    * @returns {string}
    */
   function shorten(urll) {
-    // TODO
-    return 'http://bad';
+    var id = nextid();
+    id = toDigits(id);
+    var code = "";
+    var index;
+    // TODO: sloppy for loop, replace with foreach?
+    for(index = 0; index < id.length; index++){
+      code+=alphabet.charAt(id[index]);
+    }
+    urlmap[id] = urll;
+    return protocol + code;
   }
 
   /**
@@ -110,8 +124,14 @@ function shortener(alphabet, protocol, ids) {
    * @returns {string}
    */
   function expand(urls) {
-    // TODO
-    return 'http://bad';
+    var path  = getPath(urls);
+    var id = [];
+    var index;
+    // TODO: sloppy for loop, replace with foreach?
+    for (index = 0; index<path.length; index++){
+      id.push(alphabet.indexOf(path[index]));
+    }
+    return urlmap[id];
   }
 
   // Return an object with properties for each of the functions

@@ -78,7 +78,6 @@ function shortener(alphabet, protocol, ids) {
       idArray.push(remainder);
       id = Math.floor(id/alphabetLength);
     } while(id > 0);
-
     return idArray.reverse();
   }
 
@@ -100,13 +99,11 @@ function shortener(alphabet, protocol, ids) {
    */
   function shorten(urll) {
     var id = nextid();
-    id = toDigits(id);
+    var idArray = toDigits(id);
     var code = "";
-    var index;
-    // TODO: sloppy for loop, replace with foreach?
-    for(index = 0; index < id.length; index++){
-      code+=alphabet.charAt(id[index]);
-    }
+    idArray.forEach(function(index){
+      code+=alphabet.charAt(index);
+    });
     urlmap[id] = urll;
     return protocol + code;
   }
@@ -124,12 +121,19 @@ function shortener(alphabet, protocol, ids) {
    * @returns {string}
    */
   function expand(urls) {
-    var path  = getPath(urls);
-    var id = [];
+    var path  = getPath(urls).split("");
+    var indices = [];
+    path.forEach(function(character){
+      indices.push(alphabet.indexOf(character));
+    });
     var index;
-    // TODO: sloppy for loop, replace with foreach?
-    for (index = 0; index<path.length; index++){
-      id.push(alphabet.indexOf(path[index]));
+    var id = 0;
+    // for(index = 0; index < indices.length; index++){
+    //   id *= alphabet.length;
+    //   id += indices[index]; 
+    // }
+    for(index = 0; index < indices.length; index++){
+      id+=(indices[index] * Math.pow(alphabet.length, (indices.length - 1)-index));
     }
     return urlmap[id];
   }
